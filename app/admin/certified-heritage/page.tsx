@@ -86,11 +86,13 @@ export default function AdminCertifiedPage() {
                 <Textarea placeholder="English description" value={descriptionEn} onChange={(event) => setDescriptionEn(event.target.value)} />
                 <Textarea placeholder="Arabic description" value={descriptionAr} onChange={(event) => setDescriptionAr(event.target.value)} />
                 <select className="rounded-md border px-3 py-2" value={type} onChange={(event) => setType(event.target.value as CertifiedContentType)}>
-                  <option value="library">library</option>
-                  <option value="collection">collection</option>
-                  <option value="document">document</option>
+                  <option value="library">{language === "en" ? "library" : "مكتبة"}</option>
+                  <option value="collection">{language === "en" ? "collection" : "مجموعة"}</option>
+                  <option value="document">{language === "en" ? "document" : "وثيقة"}</option>
                 </select>
-                <Button type="submit" className="w-fit rounded-full bg-secondary hover:bg-accent">{language === "en" ? "Create item" : "إنشاء عنصر"}</Button>
+                <Button type="submit" className="w-fit rounded-full bg-secondary hover:bg-accent">
+                  {language === "en" ? "Create item" : "إنشاء عنصر"}
+                </Button>
               </form>
               {items.map((item) => (
                 <div key={item.id} className="flex flex-col gap-4 rounded-lg border border-primary/10 p-4 md:flex-row md:items-center md:justify-between">

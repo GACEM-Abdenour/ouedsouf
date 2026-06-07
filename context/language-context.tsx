@@ -1,16 +1,16 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { createContext, useContext, useState, useEffect } from "react";
+import type React from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
-type Language = "en" | "ar";
+type Language = "en" | "ar"
 
 interface LanguageContextType {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
-  dir: "ltr" | "rtl";
-  year: number;
+  language: Language
+  setLanguage: (lang: Language) => void
+  t: (key: string) => string
+  dir: "ltr" | "rtl"
+  year: number
 }
 
 const translations = {
@@ -51,10 +51,8 @@ const translations = {
     "status.published": "Published",
     "status.unpublished": "Unpublished",
     "hero.title": "Wadi Souf: City of a Thousand Domes",
-    "hero.subtitle":
-      "Explore the historical and cultural treasures in the heart of the Algerian desert",
-    "hero.description":
-      "The capital of the green revolution and the city of poets and poetry",
+    "hero.subtitle": "Explore the historical and cultural treasures in the heart of the Algerian desert",
+    "hero.description": "The capital of the green revolution and the city of poets and poetry",
     "hero.cta": "Start Exploration",
     "intro.title": "The Desert Jewel",
     "intro.text":
@@ -72,10 +70,8 @@ const translations = {
     "stats.jobs.value": "150K",
     "stats.revenue.title": "Annual Revenue",
     "stats.revenue.value": "255B",
-    "footer.about":
-      "A premium cultural heritage platform dedicated to preserving the historical treasures of Wadi Souf.",
-    "footer.copyright":
-      "© {year} Wadi Souf Heritage Platform. All rights reserved.",
+    "footer.about": "A premium cultural heritage platform dedicated to preserving the historical treasures of Wadi Souf.",
+    "footer.copyright": "© {year} Wadi Souf Heritage Platform. All rights reserved.",
   },
   ar: {
     "nav.home": "الرئيسية",
@@ -107,7 +103,7 @@ const translations = {
     "marketplace.editService": "تعديل الخدمة",
     "marketplace.contact": "تواصل مع الحرفي",
     "marketplace.noCommission": "بدون عمولة",
-    "marketplace.noPayments": "لا تعالج المنصة المدفوعات",
+    "marketplace.noPayments": "المنصة لا تعالج المدفوعات",
     "admin.manageUsers": "إدارة المستخدمين",
     "admin.manageArtisans": "إدارة الحرفيين",
     "admin.verifyArtisan": "توثيق الحرفي",
@@ -133,56 +129,50 @@ const translations = {
     "stats.jobs.value": "150K",
     "stats.revenue.title": "الإيرادات السنوية",
     "stats.revenue.value": "255B",
-    "footer.about":
-      "منصة وادي سوف التراثية: بوابة رقمية لاستكشاف الكنوز التاريخية والثقافية للمنطقة.",
+    "footer.about": "منصة وادي سوف التراثية: بوابة رقمية لاستكشاف الكنوز التاريخية والثقافية للمنطقة.",
     "footer.copyright": "© {year} منصة وادي سوف التراثية. جميع الحقوق محفوظة.",
   },
-};
+}
 
-const LanguageContext = createContext<LanguageContextType | undefined>(
-  undefined
-);
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [language, setLanguage] = useState<Language>("en")
+  const [year, setYear] = useState<number>(new Date().getFullYear())
 
   useEffect(() => {
-    const saved = localStorage.getItem("lang") as Language;
+    const saved = localStorage.getItem("lang") as Language
     if (saved && (saved === "en" || saved === "ar")) {
-      setLanguage(saved);
+      setLanguage(saved)
+      document.documentElement.dir = saved === "ar" ? "rtl" : "ltr"
+      document.documentElement.lang = saved
     }
-    // Update year when component mounts and whenever year changes
-    setYear(new Date().getFullYear());
-  }, []);
+    setYear(new Date().getFullYear())
+  }, [])
 
   const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem("lang", lang);
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-    document.documentElement.lang = lang;
-  };
+    setLanguage(lang)
+    localStorage.setItem("lang", lang)
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"
+    document.documentElement.lang = lang
+  }
 
   const t = (key: string) => {
-    const text =
-      translations[language][key as keyof (typeof translations)["en"]] || key;
-    return text.replace("{year}", year.toString());
-  };
+    const text = translations[language][key as keyof (typeof translations)["en"]] || key
+    return text.replace("{year}", year.toString())
+  }
 
-  const dir = language === "ar" ? "rtl" : "ltr";
+  const dir = language === "ar" ? "rtl" : "ltr"
 
   return (
-    <LanguageContext.Provider
-      value={{ language, setLanguage: handleSetLanguage, t, dir, year }}
-    >
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t, dir, year }}>
       <div dir={dir}>{children}</div>
     </LanguageContext.Provider>
-  );
+  )
 }
 
 export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (!context)
-    throw new Error("useLanguage must be used within LanguageProvider");
-  return context;
-};
+  const context = useContext(LanguageContext)
+  if (!context) throw new Error("useLanguage must be used within LanguageProvider")
+  return context
+}

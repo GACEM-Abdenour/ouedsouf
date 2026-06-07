@@ -103,7 +103,7 @@ export function Header() {
           >
             <Globe className="h-4 w-4 text-secondary" />
             <span className="hidden uppercase tracking-tighter sm:inline">
-              {language === "en" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}
+              {language === "en" ? "العربية" : "English"}
             </span>
           </Button>
 

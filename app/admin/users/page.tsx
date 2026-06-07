@@ -60,7 +60,7 @@ export default function AdminUsersPage() {
                       <th className="p-3">Email</th>
                       <th className="p-3">{language === "en" ? "Role" : "الدور"}</th>
                       <th className="p-3">{language === "en" ? "Subscription" : "الاشتراك"}</th>
-                      <th className="p-3">{language === "en" ? "Actions" : "إجراءات"}</th>
+                      <th className="p-3">{language === "en" ? "Actions" : "الإجراءات"}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -70,16 +70,16 @@ export default function AdminUsersPage() {
                         <td className="p-3">{user.email}</td>
                         <td className="p-3">
                           <select className="rounded-md border px-2 py-1" value={user.role} onChange={(event) => void updateUser(user.id, { role: event.target.value as UserRole })}>
-                            <option value="client">client</option>
-                            <option value="artisan">artisan</option>
-                            <option value="admin">admin</option>
+                            <option value="client">{language === "en" ? "client" : "زائر"}</option>
+                            <option value="artisan">{language === "en" ? "artisan" : "حرفي"}</option>
+                            <option value="admin">{language === "en" ? "admin" : "مدير"}</option>
                           </select>
                         </td>
                         <td className="p-3">
                           <select className="rounded-md border px-2 py-1" value={user.subscriptionStatus} onChange={(event) => void updateUser(user.id, { subscription_status: event.target.value as SubscriptionStatus })}>
-                            <option value="none">none</option>
-                            <option value="active">active</option>
-                            <option value="expired">expired</option>
+                            <option value="none">{language === "en" ? "none" : "بدون اشتراك"}</option>
+                            <option value="active">{language === "en" ? "active" : "نشط"}</option>
+                            <option value="expired">{language === "en" ? "expired" : "منتهي"}</option>
                           </select>
                         </td>
                         <td className="p-3">

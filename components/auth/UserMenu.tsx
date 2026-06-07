@@ -40,7 +40,10 @@ export function UserMenu() {
         )}
         {user.role === "admin" && (
           <DropdownMenuItem asChild>
-            <Link href="/admin"><Shield className="h-4 w-4" />{language === "en" ? "Admin" : "الإدارة"}</Link>
+            <Link href="/admin">
+              <Shield className="h-4 w-4" />
+              {language === "en" ? "Admin" : "الإدارة"}
+            </Link>
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onClick={() => void logout()}>

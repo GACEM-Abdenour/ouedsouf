@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 
 export default function AdminServicesPage() {
   const { language } = useLanguage()
-  const title = language === "en" ? "Manage Services" : "إدارة الخدمات"
+  const title = language === "en" ? "Manage Services" : "إدارة الإعلانات"
   const supabase = getSupabaseBrowserClient()
   const [services, setServices] = useState<ArtisanService[]>([])
 

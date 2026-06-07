@@ -50,9 +50,9 @@ export default function AdminSubscriptionsPage() {
                       <p className="text-sm text-muted-foreground">{user.email}</p>
                     </div>
                     <select className="rounded-md border px-3 py-2" value={user.subscriptionStatus} onChange={(event) => void updateSubscription(user.id, event.target.value as SubscriptionStatus)}>
-                      <option value="none">none</option>
-                      <option value="active">active</option>
-                      <option value="expired">expired</option>
+                      <option value="none">{language === "en" ? "none" : "بدون اشتراك"}</option>
+                      <option value="active">{language === "en" ? "active" : "نشط"}</option>
+                      <option value="expired">{language === "en" ? "expired" : "منتهي"}</option>
                     </select>
                   </div>
                 ))}
