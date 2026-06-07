@@ -164,7 +164,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (key: string) => {
-    let text =
+    const text =
       translations[language][key as keyof (typeof translations)["en"]] || key;
     return text.replace("{year}", year.toString());
   };

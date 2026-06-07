@@ -90,8 +90,6 @@ Thumbs.db
 # =========================
 # For pnpm
 pnpm-lock.yaml
-# For npm
-package-lock.json
 # For yarn
 yarn.lock
 
