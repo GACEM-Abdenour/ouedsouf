@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useLanguage } from "@/context/language-context"
 import { Button } from "@/components/ui/button"
@@ -46,37 +47,43 @@ export function Header() {
     <header
       className={cn(
         "fixed top-0 z-50 w-full transition-all duration-500",
-        isScrolled ? "bg-background/98 backdrop-blur-md border-b shadow-md py-3" : "bg-background border-b py-4", // Removed transparent gradient for better visibility
+        isScrolled ? "bg-background/98 backdrop-blur-md border-b shadow-md py-3" : "bg-background border-b py-4",
       )}
     >
-      <div className="container mx-auto px-4 lg:px-8 flex items-center justify-between">
+      <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white font-serif text-2xl group-hover:bg-accent transition-all duration-300 shadow-lg group-hover:shadow-primary/20">
-            WS
+          <div className="relative h-14 w-[176px] shrink-0 transition-transform duration-300 group-hover:scale-[1.02]">
+            <Image
+              src="/logo.png"
+              alt={language === "ar" ? "شعار منصة وادي سوف التراثية" : "Wadi Souf Heritage logo"}
+              fill
+              sizes="176px"
+              className="object-contain object-right"
+              priority
+            />
           </div>
-          <div className="flex flex-col">
+          <div className="hidden flex-col sm:flex">
             <span className="font-sans text-lg font-bold tracking-tight text-primary leading-tight">
-              {language === "ar" ? "منصة وادي سوف التراثية" : "Wadi Souf Heritage"}
+              {language === "ar" ? "Ù…Ù†ØµØ© ÙˆØ§Ø¯ÙŠ Ø³ÙˆÙ Ø§Ù„ØªØ±Ø§Ø«ÙŠØ©" : "Wadi Souf Heritage"}
             </span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
-              {language === "ar" ? "بوابة الكنوز التاريخية" : "Historical Treasures Gateway"}
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              {language === "ar" ? "Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„ÙƒÙ†ÙˆØ² Ø§Ù„ØªØ§Ø±ÙŠØ®ÙŠØ©" : "Historical Treasures Gateway"}
             </span>
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6">
+        <nav className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) =>
             link.dropdown ? (
               <DropdownMenu key={link.label}>
-                <DropdownMenuTrigger className="flex items-center gap-1 font-semibold text-muted-foreground hover:text-primary transition-all duration-300 focus:outline-none text-sm uppercase tracking-wider group">
+                <DropdownMenuTrigger className="group flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-muted-foreground transition-all duration-300 hover:text-primary focus:outline-none">
                   {link.label}
-                  <ChevronDown className="w-4 h-4 group-data-[state=open]:rotate-180 transition-transform" />
+                  <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align={dir === "rtl" ? "end" : "start"} className="bg-background border-border">
+                <DropdownMenuContent align={dir === "rtl" ? "end" : "start"} className="border-border bg-background">
                   {link.dropdown.map((sub) => (
                     <DropdownMenuItem key={sub.href} asChild>
-                      <Link href={sub.href} className="w-full cursor-pointer hover:bg-muted py-2">
+                      <Link href={sub.href} className="w-full cursor-pointer py-2 hover:bg-muted">
                         {sub.label}
                       </Link>
                     </DropdownMenuItem>
@@ -87,7 +94,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-semibold text-muted-foreground hover:text-primary transition-all duration-300 text-sm uppercase tracking-wider relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-secondary after:transition-all hover:after:w-full"
+                className="relative text-sm font-semibold uppercase tracking-wider text-muted-foreground transition-all duration-300 hover:text-primary after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-secondary after:transition-all hover:after:w-full"
               >
                 {link.label}
               </Link>
@@ -100,11 +107,11 @@ export function Header() {
             variant="ghost"
             size="sm"
             onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-            className="flex items-center gap-2 hover:bg-muted font-bold"
+            className="flex items-center gap-2 font-bold hover:bg-muted"
           >
-            <Globe className="w-4 h-4 text-secondary" />
-            <span className="hidden sm:inline uppercase tracking-tighter">
-              {language === "en" ? "العربية" : "English"}
+            <Globe className="h-4 w-4 text-secondary" />
+            <span className="hidden uppercase tracking-tighter sm:inline">
+              {language === "en" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}
             </span>
           </Button>
 
@@ -113,28 +120,27 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden text-primary"
+            className="text-primary lg:hidden"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-background border-b shadow-lg animate-in fade-in slide-in-from-top-4">
-          <nav className="flex flex-col p-4 gap-4">
+        <div className="absolute top-full left-0 w-full animate-in fade-in slide-in-from-top-4 border-b bg-background shadow-lg lg:hidden">
+          <nav className="flex flex-col gap-4 p-4">
             {navLinks.map((link) =>
               link.dropdown ? (
                 <div key={link.label} className="flex flex-col gap-2">
-                  <span className="font-semibold text-primary px-2">{link.label}</span>
+                  <span className="px-2 font-semibold text-primary">{link.label}</span>
                   {link.dropdown.map((sub) => (
                     <Link
                       key={sub.href}
                       href={sub.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-muted-foreground hover:text-primary px-4 py-1 border-l-2 border-transparent hover:border-accent transition-all"
+                      className="border-l-2 border-transparent px-4 py-1 text-muted-foreground transition-all hover:border-accent hover:text-primary"
                     >
                       {sub.label}
                     </Link>
@@ -145,7 +151,7 @@ export function Header() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="font-medium text-muted-foreground hover:text-primary px-2 py-2"
+                  className="px-2 py-2 font-medium text-muted-foreground hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -154,7 +160,7 @@ export function Header() {
             <Link
               href={user ? "/dashboard" : "/login"}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="font-medium text-primary hover:text-secondary px-2 py-2"
+              className="px-2 py-2 font-medium text-primary hover:text-secondary"
             >
               {user ? t("nav.dashboard") : t("nav.login")}
             </Link>
