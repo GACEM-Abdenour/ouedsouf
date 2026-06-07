@@ -31,8 +31,8 @@ export function RegisterForm() {
     note: language === "en" ? "Admin accounts are not created publicly." : "لا يتم إنشاء حسابات الإدارة من التسجيل العام.",
     pending:
       language === "en"
-        ? "Supabase keys are still missing. Add them to .env.local before registration can work."
-        : "مفاتيح Supabase غير مضافة بعد. أضفها إلى .env.local قبل تفعيل التسجيل.",
+        ? "Authentication is not configured yet. Add the environment variables in .env.local before registration can work."
+        : "لم يتم إعداد تسجيل الدخول بعد. أضف متغيرات البيئة إلى .env.local قبل تفعيل التسجيل.",
   }
 
   async function onSubmit(event: React.FormEvent) {

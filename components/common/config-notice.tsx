@@ -13,7 +13,7 @@ export function ConfigNotice() {
         <AlertCircle className="mt-0.5 h-5 w-5 text-secondary" />
         <div className="space-y-1 text-sm text-muted-foreground">
           <p className="font-medium text-primary">
-            {language === "en" ? "Supabase configuration needed" : "يلزم إعداد Supabase"}
+            {language === "en" ? "Authentication setup needed" : "يلزم إعداد تسجيل الدخول"}
           </p>
           <p>
             {language === "en"

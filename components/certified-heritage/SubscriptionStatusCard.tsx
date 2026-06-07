@@ -34,7 +34,7 @@ export function SubscriptionStatusCard() {
         </p>
         <div className="flex flex-wrap gap-2">
           {!user && <Button asChild><Link href="/login">{language === "en" ? "Login" : "دخول"}</Link></Button>}
-          {user && !active && !isConfigured && <p className="text-sm text-muted-foreground">{language === "en" ? "Configure Supabase keys to connect real subscription data." : "أضف مفاتيح Supabase لربط بيانات الاشتراك الحقيقية."}</p>}
+          {user && !active && !isConfigured && <p className="text-sm text-muted-foreground">{language === "en" ? "Connect the environment variables to load real subscription data." : "أضف متغيرات البيئة لعرض بيانات الاشتراك الحقيقية."}</p>}
           {active && <Button asChild className="bg-secondary hover:bg-accent"><Link href="/certified-heritage/library">{language === "en" ? "Open library" : "فتح المكتبة"}</Link></Button>}
         </div>
       </CardContent>

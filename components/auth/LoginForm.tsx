@@ -25,12 +25,12 @@ export function LoginForm() {
     submit: language === "en" ? "Enter dashboard" : "الدخول للوحة التحكم",
     note:
       language === "en"
-        ? "Use your Supabase email and password. Public registration supports client and artisan roles."
-        : "استخدم البريد وكلمة المرور من Supabase. التسجيل العام يدعم دور الزائر والحرفي.",
+        ? "Use your email and password. Public registration supports client and artisan roles."
+        : "استخدم البريد وكلمة المرور. التسجيل العام يدعم دور الزائر والحرفي.",
     pending:
       language === "en"
-        ? "Supabase keys are still missing. Add them to .env.local to enable real login."
-        : "مفاتيح Supabase غير مضافة بعد. أضفها إلى .env.local لتفعيل تسجيل الدخول الحقيقي.",
+        ? "Authentication is not configured yet. Add the environment variables in .env.local to enable login."
+        : "لم يتم إعداد تسجيل الدخول بعد. أضف متغيرات البيئة إلى .env.local لتفعيل الدخول.",
   }
 
   async function onSubmit(event: React.FormEvent) {
