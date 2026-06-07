@@ -52,23 +52,15 @@ export function Header() {
     >
       <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative h-14 w-[176px] shrink-0 transition-transform duration-300 group-hover:scale-[1.02]">
+          <div className="relative h-14 w-[176px] shrink-0 transition-transform duration-300 group-hover:scale-[1.02] sm:h-16 sm:w-[208px]">
             <Image
               src="/logo.png"
               alt={language === "ar" ? "شعار منصة وادي سوف التراثية" : "Wadi Souf Heritage logo"}
               fill
-              sizes="176px"
-              className="object-contain object-right"
+              sizes="(min-width: 640px) 208px, 176px"
+              className="object-contain object-center"
               priority
             />
-          </div>
-          <div className="hidden flex-col sm:flex">
-            <span className="font-sans text-lg font-bold tracking-tight text-primary leading-tight">
-              {language === "ar" ? "Ù…Ù†ØµØ© ÙˆØ§Ø¯ÙŠ Ø³ÙˆÙ Ø§Ù„ØªØ±Ø§Ø«ÙŠØ©" : "Wadi Souf Heritage"}
-            </span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {language === "ar" ? "Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„ÙƒÙ†ÙˆØ² Ø§Ù„ØªØ§Ø±ÙŠØ®ÙŠØ©" : "Historical Treasures Gateway"}
-            </span>
           </div>
         </Link>
 
