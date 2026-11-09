@@ -137,16 +137,15 @@ const translations = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en")
+  const [language, setLanguage] = useState<Language>("ar")
   const [year, setYear] = useState<number>(new Date().getFullYear())
 
   useEffect(() => {
     const saved = localStorage.getItem("lang") as Language
-    if (saved && (saved === "en" || saved === "ar")) {
-      setLanguage(saved)
-      document.documentElement.dir = saved === "ar" ? "rtl" : "ltr"
-      document.documentElement.lang = saved
-    }
+    const initialLanguage = saved === "en" || saved === "ar" ? saved : "ar"
+    setLanguage(initialLanguage)
+    document.documentElement.dir = initialLanguage === "ar" ? "rtl" : "ltr"
+    document.documentElement.lang = initialLanguage
     setYear(new Date().getFullYear())
   }, [])
 

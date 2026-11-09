@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setAuthError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -99,20 +99,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { error: error.message }
     }
 
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser()
-
-    let redirectTo = "/dashboard"
-    if (authUser) {
-      const profile = await getCurrentProfile(supabase, authUser.id)
-      setUser(profile)
-      redirectTo = getDashboardPathForRole(profile.role)
-    } else {
-      await hydrateFromSession()
+    if (!data.user) {
+      const errorMessage = "Unable to load your account after login."
+      setAuthError(errorMessage)
+      return { error: errorMessage }
     }
 
-    return { error: null, redirectTo }
+    try {
+      const profile = await getCurrentProfile(supabase, data.user.id)
+      setUser(profile)
+      return { error: null, redirectTo: getDashboardPathForRole(profile.role) }
+    } catch (caught) {
+      const errorMessage = caught instanceof Error ? caught.message : "Unable to load your account role."
+      setAuthError(errorMessage)
+      return { error: errorMessage }
+    }
   }
 
   async function register(name: string, email: string, password: string, role: "client" | "artisan"): Promise<AuthActionResult> {
@@ -140,13 +141,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const profile = await getCurrentProfile(supabase, data.user.id)
         setUser(profile)
+        return {
+          error: null,
+          redirectTo: profile.role === "artisan" ? "/dashboard/artisan/profile" : getDashboardPathForRole(profile.role),
+        }
       } catch {
         await hydrateFromSession()
       }
 
       return {
         error: null,
-        redirectTo: role === "artisan" ? "/dashboard/artisan/profile" : "/dashboard/profile",
+        redirectTo: getDashboardPathForRole(role),
       }
     }
 
