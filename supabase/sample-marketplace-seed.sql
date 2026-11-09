@@ -1,13 +1,14 @@
 -- Run this in the Supabase SQL Editor after schema.sql.
 --
 -- Important:
--- 1. Create these accounts first using Supabase Auth or the app registration flow:
---    admin@wadsoufheritage.local
---    subscriber@wadsoufheritage.local
---    visitor@wadsoufheritage.local
---    weaver@wadsoufheritage.local
---    potter@wadsoufheritage.local
---    guide@wadsoufheritage.local
+-- 1. Create these accounts first using scripts/create-demo-auth-users.mjs
+--    or the app registration flow:
+--    admin.demo@example.com
+--    subscriber.demo@example.com
+--    visitor.demo@example.com
+--    weaver.demo@example.com
+--    potter.demo@example.com
+--    guide.demo@example.com
 -- 2. Then run this script to enrich those users with profiles, artisan pages,
 --    and marketplace listings.
 --
@@ -20,12 +21,12 @@ with demo_users as (
   select *
   from (
     values
-      ('admin@wadsoufheritage.local', 'مدير المنصة', 'admin', 'none'),
-      ('subscriber@wadsoufheritage.local', 'مشترك نشط', 'client', 'active'),
-      ('visitor@wadsoufheritage.local', 'زائر السوق', 'client', 'none'),
-      ('weaver@wadsoufheritage.local', 'عايشة الناسجة', 'artisan', 'none'),
-      ('potter@wadsoufheritage.local', 'بيت مراد للفخار', 'artisan', 'none'),
-      ('guide@wadsoufheritage.local', 'سليم الدليل التراثي', 'artisan', 'none')
+      ('admin.demo@example.com', 'مدير المنصة', 'admin', 'none'),
+      ('subscriber.demo@example.com', 'مشترك نشط', 'client', 'active'),
+      ('visitor.demo@example.com', 'زائر السوق', 'client', 'none'),
+      ('weaver.demo@example.com', 'عايشة الناسجة', 'artisan', 'none'),
+      ('potter.demo@example.com', 'بيت مراد للفخار', 'artisan', 'none'),
+      ('guide.demo@example.com', 'سليم الدليل التراثي', 'artisan', 'none')
   ) as seed(email, full_name, app_role, subscription_status)
 ),
 matched_auth_users as (
@@ -59,7 +60,7 @@ with artisan_seed as (
   from (
     values
       (
-        'weaver@wadsoufheritage.local',
+        'weaver.demo@example.com',
         'عايشة الناسجة',
         'مشغل نول سوف',
         'Handwoven palm and wool pieces for homes, gifts, and heritage displays.',
@@ -72,7 +73,7 @@ with artisan_seed as (
         true
       ),
       (
-        'potter@wadsoufheritage.local',
+        'potter.demo@example.com',
         'بيت مراد للفخار',
         'بيت مراد للفخار',
         'Traditional pottery and decorative ceramics shaped with local patterns.',
@@ -85,7 +86,7 @@ with artisan_seed as (
         true
       ),
       (
-        'guide@wadsoufheritage.local',
+        'guide.demo@example.com',
         'سليم الدليل التراثي',
         'جولات دروب الواحة',
         'Private walks and small group introductions to oasis life, domes, and old neighborhoods.',
@@ -157,7 +158,7 @@ with service_seed as (
   from (
     values
       (
-        'weaver@wadsoufheritage.local',
+        'weaver.demo@example.com',
         'Custom woven room accents',
         'مفروشات منسوجة حسب الطلب',
         'Handmade woven mats, wall hangings, and custom color sets for homes and guest spaces.',
@@ -173,7 +174,7 @@ with service_seed as (
         true
       ),
       (
-        'potter@wadsoufheritage.local',
+        'potter.demo@example.com',
         'Decorative pottery for homes and cafes',
         'فخار وزينة للمنازل والمقاهي',
         'Serving trays, table pieces, and small-batch pottery shaped with Soufi-inspired details.',
@@ -189,7 +190,7 @@ with service_seed as (
         true
       ),
       (
-        'guide@wadsoufheritage.local',
+        'guide.demo@example.com',
         'Oasis walk and dome architecture tour',
         'جولة الواحة والقباب',
         'A guided introduction for visitors who want a simple, local explanation of neighborhoods, domes, and daily oasis culture.',
@@ -200,7 +201,7 @@ with service_seed as (
           'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=1200&q=80'
         ]::text[],
         '+213 555 030 303',
-        'guide@wadsoufheritage.local',
+        'guide.demo@example.com',
         '+213555030303',
         true
       ),

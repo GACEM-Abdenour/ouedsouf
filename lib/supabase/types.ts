@@ -1,4 +1,5 @@
 import type { UserRole } from "@/types/auth"
+import type { CertifiedPaymentStatus } from "@/types/certified-payment"
 import type { SubscriptionStatus } from "@/types/subscription"
 import type { CertifiedContentType } from "@/types/certified-heritage"
 
@@ -8,6 +9,8 @@ export interface ProfileRow {
   email: string
   role: UserRole
   subscription_status: SubscriptionStatus
+  subscription_started_at: string | null
+  subscription_expires_at: string | null
   created_at: string
   updated_at: string
 }
@@ -28,6 +31,21 @@ export interface ArtisanProfileRow {
   whatsapp: string | null
   is_verified: boolean
   is_public: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface CertifiedPaymentRow {
+  id: string
+  user_id: string
+  amount: number | string
+  currency: string
+  payment_method: string | null
+  receipt_path: string
+  status: CertifiedPaymentStatus
+  admin_note: string | null
+  reviewed_by: string | null
+  reviewed_at: string | null
   created_at: string
   updated_at: string
 }

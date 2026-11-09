@@ -7,6 +7,12 @@ const nextConfig = {
   // Image optimization
   images: {
     unoptimized: process.env.NODE_ENV === "development",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
   // Performance optimizations
   compress: true,

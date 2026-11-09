@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Save } from "lucide-react"
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute"
 import { DashboardShell } from "@/components/dashboard/DashboardShell"
@@ -19,6 +19,10 @@ export default function DashboardProfilePage() {
   const supabase = getSupabaseBrowserClient()
   const [name, setName] = useState(user?.name ?? "")
   const [status, setStatus] = useState<string | null>(null)
+
+  useEffect(() => {
+    setName(user?.name ?? "")
+  }, [user?.name])
 
   async function saveProfile(event: React.FormEvent) {
     event.preventDefault()

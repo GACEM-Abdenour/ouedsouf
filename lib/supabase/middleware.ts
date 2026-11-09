@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 import { isSupabaseConfigured, supabaseEnv } from "@/lib/supabase/env"
 
-export function updateSession(request: NextRequest) {
+export async function updateSession(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.next({
       request,
@@ -27,7 +27,7 @@ export function updateSession(request: NextRequest) {
     },
   })
 
-  void supabase.auth.getUser()
+  await supabase.auth.getUser()
 
   return response
 }

@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "seed:demo-users": "node --env-file=.env.local scripts/create-demo-auth-users.mjs",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\""
   },

@@ -3,7 +3,8 @@ import type { HeritageUser } from "@/types/auth"
 import type { ArtisanProfile, ArtisanCategory } from "@/types/artisan"
 import type { ArtisanService } from "@/types/service"
 import type { CertifiedHeritageItem } from "@/types/certified-heritage"
-import type { ProfileRow, ArtisanProfileRow, ArtisanServiceRow, CertifiedHeritageRow } from "@/lib/supabase/types"
+import type { CertifiedPayment, CertifiedPaymentStatus } from "@/types/certified-payment"
+import type { ProfileRow, ArtisanProfileRow, ArtisanServiceRow, CertifiedHeritageRow, CertifiedPaymentRow } from "@/lib/supabase/types"
 
 export const artisanCategories: ArtisanCategory[] = [
   { id: "hand-weaving", label: { en: "Hand Weaving", ar: "النسيج اليدوي" } },
@@ -26,6 +27,8 @@ export function mapProfile(row: ProfileRow): HeritageUser {
     email: row.email,
     role: row.role,
     subscriptionStatus: row.subscription_status,
+    subscriptionStartedAt: row.subscription_started_at ?? undefined,
+    subscriptionExpiresAt: row.subscription_expires_at ?? undefined,
     createdAt: row.created_at,
   }
 }
@@ -97,6 +100,31 @@ export function mapCertifiedItem(row: CertifiedHeritageRow): CertifiedHeritageIt
     isLocked: true,
     isPublished: row.is_published,
     publishedAt: row.created_at,
+  }
+}
+
+type CertifiedPaymentWithProfile = CertifiedPaymentRow & {
+  profiles?: { name: string | null; email: string } | { name: string | null; email: string }[] | null
+}
+
+export function mapCertifiedPayment(row: CertifiedPaymentWithProfile): CertifiedPayment {
+  const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles
+
+  return {
+    id: row.id,
+    userId: row.user_id,
+    amount: Number(row.amount),
+    currency: row.currency,
+    paymentMethod: row.payment_method ?? undefined,
+    receiptPath: row.receipt_path,
+    status: row.status,
+    adminNote: row.admin_note ?? undefined,
+    reviewedBy: row.reviewed_by ?? undefined,
+    reviewedAt: row.reviewed_at ?? undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    userName: profile?.name ?? undefined,
+    userEmail: profile?.email ?? undefined,
   }
 }
 
@@ -180,4 +208,44 @@ export async function getAdminCertifiedItems(client: SupabaseClient) {
   const { data, error } = await client.from("certified_heritage_items").select("*").order("created_at", { ascending: false }).returns<CertifiedHeritageRow[]>()
   if (error) throw error
   return data.map(mapCertifiedItem)
+}
+
+export async function getLatestCertifiedPaymentForUser(client: SupabaseClient, userId: string) {
+  const { data, error } = await client
+    .from("certified_payments")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle<CertifiedPaymentRow>()
+  if (error) throw error
+  return data ? mapCertifiedPayment(data) : null
+}
+
+export async function getPendingCertifiedPaymentForUser(client: SupabaseClient, userId: string) {
+  const { data, error } = await client
+    .from("certified_payments")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle<CertifiedPaymentRow>()
+  if (error) throw error
+  return data ? mapCertifiedPayment(data) : null
+}
+
+export async function getAdminCertifiedPayments(client: SupabaseClient, status?: CertifiedPaymentStatus | "all") {
+  let query = client
+    .from("certified_payments")
+    .select("*, profiles(name, email)")
+    .order("created_at", { ascending: false })
+
+  if (status && status !== "all") {
+    query = query.eq("status", status)
+  }
+
+  const { data, error } = await query.returns<CertifiedPaymentWithProfile[]>()
+  if (error) throw error
+  return data.map(mapCertifiedPayment)
 }

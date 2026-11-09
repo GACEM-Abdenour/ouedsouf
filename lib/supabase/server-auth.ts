@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { getCurrentProfile } from "@/lib/supabase/queries"
+import { hasActiveSubscription } from "@/lib/subscription"
 
 export async function getServerAuthState() {
   const supabase = await getSupabaseServerClient()
@@ -56,7 +57,7 @@ export async function requireAdmin() {
 
 export async function requireActiveSubscription() {
   const state = await requireAuthenticatedUser()
-  if (!state.profile || state.profile.subscriptionStatus !== "active") {
+  if (!hasActiveSubscription(state.profile)) {
     redirect("/certified-heritage")
   }
   return state

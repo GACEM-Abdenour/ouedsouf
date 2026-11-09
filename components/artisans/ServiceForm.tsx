@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Save } from "lucide-react"
 import { useLanguage } from "@/context/language-context"
 import { getSupabaseBrowserClient } from "@/lib/supabase/client"
@@ -32,6 +32,17 @@ export function ServiceForm({
   const [isPublished, setIsPublished] = useState(initialService?.isPublished ?? true)
   const [status, setStatus] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (!initialService) return
+
+    setTitle(language === "en" ? initialService.title.en : initialService.title.ar)
+    setDescription(language === "en" ? initialService.description.en : initialService.description.ar)
+    setCategory(initialService.category)
+    setPhone(initialService.contactMethod.phone ?? "")
+    setWhatsapp(initialService.contactMethod.whatsapp ?? "")
+    setIsPublished(initialService.isPublished)
+  }, [initialService, language])
 
   if (!supabase) return <ConfigNotice />
   const client = supabase

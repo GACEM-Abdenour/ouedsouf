@@ -17,6 +17,7 @@ export default function AdminPage() {
     ["/admin/services", language === "en" ? "Manage Services" : "إدارة الإعلانات"],
     ["/admin/certified-heritage", language === "en" ? "Certified Heritage" : "التراث المعتمد"],
     ["/admin/subscriptions", language === "en" ? "Subscriptions" : "الاشتراكات"],
+    ["/admin/payments", language === "en" ? "Payment Reviews" : "مراجعة المدفوعات"],
   ]
 
   return (

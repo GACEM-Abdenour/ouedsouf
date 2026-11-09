@@ -8,6 +8,8 @@ export interface HeritageUser {
   email: string
   role: UserRole
   subscriptionStatus: SubscriptionStatus
+  subscriptionStartedAt?: string
+  subscriptionExpiresAt?: string
   avatarUrl?: string
   createdAt: string
 }

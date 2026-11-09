@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Save } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import { useLanguage } from "@/context/language-context"
@@ -26,6 +26,20 @@ export function ArtisanProfileForm({ initialProfile }: { initialProfile?: Artisa
   const [bio, setBio] = useState(language === "en" ? initialProfile?.bio.en ?? "" : initialProfile?.bio.ar ?? "")
   const [status, setStatus] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (initialProfile) {
+      setDisplayName(initialProfile.displayName)
+      setLocation(initialProfile.location)
+      setPhone(initialProfile.phone ?? "")
+      setWhatsapp(initialProfile.whatsapp ?? "")
+      setCategory(initialProfile.categories[0] ?? artisanCategories[0]?.id ?? "other")
+      setBio(language === "en" ? initialProfile.bio.en : initialProfile.bio.ar)
+      return
+    }
+
+    setDisplayName(user?.name ?? "")
+  }, [initialProfile, language, user?.name])
 
   if (!supabase) return <ConfigNotice />
   const client = supabase

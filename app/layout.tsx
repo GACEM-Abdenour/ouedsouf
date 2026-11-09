@@ -6,7 +6,7 @@ import { LanguageProvider } from "@/context/language-context"
 import { AuthProvider } from "@/context/auth-context"
 
 export const metadata: Metadata = {
-  title: "Wad Souf Heritage | Ù…Ù†ØµØ© ÙˆØ§Ø¯ÙŠ Ø³ÙˆÙ Ø§Ù„ØªØ±Ø§Ø«ÙŠØ©",
+  title: "Wad Souf Heritage | منصة وادي سوف التراثية",
   description:
     "Explore the historical and cultural treasures of Wadi Souf, Algeria. A premium documentation of Islamic architecture and desert heritage.",
   generator: "v0.app",

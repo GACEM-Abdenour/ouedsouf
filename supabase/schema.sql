@@ -16,9 +16,17 @@ create table if not exists public.profiles (
   email text unique not null,
   role text not null default 'client' check (role in ('client', 'artisan', 'admin')),
   subscription_status text not null default 'none' check (subscription_status in ('none', 'active', 'expired')),
+  subscription_started_at timestamptz,
+  subscription_expires_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.profiles
+add column if not exists subscription_started_at timestamptz;
+
+alter table public.profiles
+add column if not exists subscription_expires_at timestamptz;
 
 create table if not exists public.artisan_profiles (
   id uuid primary key default gen_random_uuid(),
@@ -74,14 +82,32 @@ create table if not exists public.certified_heritage_items (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.certified_payments (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  amount numeric(12, 2) not null,
+  currency text not null default 'DZD',
+  payment_method text,
+  receipt_path text not null,
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  admin_note text,
+  reviewed_by uuid references public.profiles(id),
+  reviewed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create index if not exists profiles_role_idx on public.profiles(role);
 create index if not exists profiles_subscription_status_idx on public.profiles(subscription_status);
+create index if not exists profiles_subscription_expires_at_idx on public.profiles(subscription_expires_at);
 create index if not exists artisan_profiles_user_id_idx on public.artisan_profiles(user_id);
 create index if not exists artisan_profiles_is_public_idx on public.artisan_profiles(is_public);
 create index if not exists artisan_services_artisan_id_idx on public.artisan_services(artisan_id);
 create index if not exists artisan_services_is_published_idx on public.artisan_services(is_published);
 create index if not exists certified_heritage_items_type_idx on public.certified_heritage_items(type);
 create index if not exists certified_heritage_items_is_published_idx on public.certified_heritage_items(is_published);
+create index if not exists certified_payments_user_id_idx on public.certified_payments(user_id);
+create index if not exists certified_payments_status_idx on public.certified_payments(status);
 
 drop trigger if exists set_profiles_updated_at on public.profiles;
 create trigger set_profiles_updated_at
@@ -104,6 +130,12 @@ execute function public.set_updated_at();
 drop trigger if exists set_certified_heritage_items_updated_at on public.certified_heritage_items;
 create trigger set_certified_heritage_items_updated_at
 before update on public.certified_heritage_items
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_certified_payments_updated_at on public.certified_payments;
+create trigger set_certified_payments_updated_at
+before update on public.certified_payments
 for each row
 execute function public.set_updated_at();
 
@@ -172,10 +204,30 @@ as $$
   );
 $$;
 
+create or replace function public.current_user_has_active_subscription()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+      and subscription_status = 'active'
+      and (
+        subscription_expires_at is null
+        or subscription_expires_at > now()
+      )
+  );
+$$;
+
 alter table public.profiles enable row level security;
 alter table public.artisan_profiles enable row level security;
 alter table public.artisan_services enable row level security;
 alter table public.certified_heritage_items enable row level security;
+alter table public.certified_payments enable row level security;
 
 drop policy if exists "profiles_select_own_or_admin" on public.profiles;
 create policy "profiles_select_own_or_admin"
@@ -270,7 +322,7 @@ using (
   (
     is_published = true
     and auth.uid() is not null
-    and public.current_user_subscription_status() = 'active'
+    and public.current_user_has_active_subscription()
   )
   or public.is_admin()
 );
@@ -281,6 +333,56 @@ on public.certified_heritage_items
 for all
 using (public.is_admin())
 with check (public.is_admin());
+
+drop policy if exists "certified_payments_select_own_or_admin" on public.certified_payments;
+create policy "certified_payments_select_own_or_admin"
+on public.certified_payments
+for select
+using (auth.uid() = user_id or public.is_admin());
+
+drop policy if exists "certified_payments_insert_own_pending" on public.certified_payments;
+create policy "certified_payments_insert_own_pending"
+on public.certified_payments
+for insert
+with check (auth.uid() = user_id and status = 'pending');
+
+drop policy if exists "certified_payments_admin_update" on public.certified_payments;
+create policy "certified_payments_admin_update"
+on public.certified_payments
+for update
+using (public.is_admin())
+with check (public.is_admin());
+
+insert into storage.buckets (id, name, public)
+values ('payment-receipts', 'payment-receipts', false)
+on conflict (id) do update
+set public = false;
+
+drop policy if exists "payment_receipts_insert_own" on storage.objects;
+create policy "payment_receipts_insert_own"
+on storage.objects
+for insert
+with check (
+  bucket_id = 'payment-receipts'
+  and auth.uid() is not null
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+drop policy if exists "payment_receipts_select_own" on storage.objects;
+create policy "payment_receipts_select_own"
+on storage.objects
+for select
+using (
+  bucket_id = 'payment-receipts'
+  and auth.uid() is not null
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+drop policy if exists "payment_receipts_select_admin" on storage.objects;
+create policy "payment_receipts_select_admin"
+on storage.objects
+for select
+using (bucket_id = 'payment-receipts' and public.is_admin());
 
 insert into public.artisan_profiles (
   id,
